@@ -2,6 +2,7 @@
 using BookKeeper.Data.Models;
 using BookKeeper.Data.Repositories;
 using FakeItEasy;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -83,8 +84,11 @@ namespace BookKeeper.Test
             A.CallTo(() => _bookRepository.BookLoanedOut("Bannanas")).Returns(true);
 
             // Act
+            var result = _bookRepository.BookLoanedOut("Bannanas");
 
             // Assert
+            Assert.True(result);
+            //result.Should().Equals(true);
         }
 
         public void Dispose()
