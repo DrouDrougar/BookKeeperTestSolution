@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookKeeper.Data.Data;
 using BookKeeper.Data.Models;
+using BookKeeper.Data.Repositories;
 
 namespace BookKeeper.Controllers
 {
     public class BookLoansController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBookLoanRepository bookLoanRepository;
 
         public BookLoansController(ApplicationDbContext context)
         {

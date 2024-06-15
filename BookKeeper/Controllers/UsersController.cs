@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookKeeper.Data.Data;
 using BookKeeper.Data.Models;
+using BookKeeper.Data.Repositories;
 
 namespace BookKeeper.Controllers
 {
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUserRepository userRepository;
 
         public UsersController(ApplicationDbContext context)
         {

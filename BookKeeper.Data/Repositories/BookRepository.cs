@@ -1,11 +1,5 @@
 ﻿using BookKeeper.Data.Data;
 using BookKeeper.Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookKeeper.Data.Repositories
 {
@@ -13,6 +7,25 @@ namespace BookKeeper.Data.Repositories
     {
 
         private readonly ApplicationDbContext _context;
+
+        public bool BookLoanedOut(string title)
+        {
+            var theBookToCheck = _context.Books.SingleOrDefault(x => x.Title == title);
+            if (theBookToCheck != null)
+            {
+                if (theBookToCheck.LoanedOut == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else { return false; };
+            
+        }
+
         public Book GetBookById(int id)
         {
             return _context.Books.SingleOrDefault(x => x.BookId == id);

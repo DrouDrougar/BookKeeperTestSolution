@@ -13,6 +13,7 @@ namespace BookKeeper.Data.Repositories
         public Book GetBookById(int id);
         public Book GetBookByTitle(string title);
         public List<Book> GetBooksByAuthor(string author);
+        public bool BookLoanedOut(string title);
 
     }
 }
