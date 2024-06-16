@@ -16,9 +16,10 @@ namespace BookKeeper.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IBookRepository _bookRepository;
 
-        public BooksController(ApplicationDbContext context)
+        public BooksController(ApplicationDbContext context, IBookRepository bookRepository)
         {
             _context = context;
+            _bookRepository = bookRepository;
         }
 
         // GET: Books
