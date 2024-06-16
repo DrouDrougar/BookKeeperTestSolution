@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BookKeeper.Data.Repositories
 {
-    internal class BookLoanRepository : IBookLoanRepository
+    public class BookLoanRepository : IBookLoanRepository
     {
         private readonly ApplicationDbContext _context;
         public List<BookLoan> BookLoan()

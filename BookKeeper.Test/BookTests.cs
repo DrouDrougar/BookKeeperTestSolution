@@ -27,14 +27,14 @@ namespace BookKeeper.Test
 
         public BookTests()
         {
-            //dbContext = new ApplicationDbContext(dbContextOptions);
+            dbContext = new ApplicationDbContext(dbContextOptions);
             dbContext.Database.EnsureCreated();
 
             _bookRepository = A.Fake<IBookRepository>();
             SeedDatabase();
         }
 
-        public List<Book> SeedDatabase()
+        public void SeedDatabase()
         {
             List<Book> books = new List<Book>()
             {
@@ -45,50 +45,63 @@ namespace BookKeeper.Test
                 new Book() {BookId = 5, Author = "Jurgen", Language = "German", Title = "Daz U Bannanas", LoanedOut = false},
                 new Book() {BookId = 6, Author = "Hendrik", Language = "America", Title = "Deep Fried Bannans", LoanedOut = false}
             };
-            return books;
+            dbContext.Books.AddRange(books);
+            dbContext.SaveChanges();
         }
 
         [Fact]
-        public void AreThereBookInTheDatabase_Test()
+        public void AreThereBookInTheDatabase_Test_ReturnTrue()
         {
             // Arrange
-
+            //Book book;
+     
             // Act
+            var bookCounter = dbContext.Books.Any();
 
             // Assert
+            Assert.True(bookCounter);
+            bookCounter.Should().Be(true);
+
         }
         [Fact]
         public void SearchForTitleInDatabase_Test()
         {
             // Arrange
+            Book book;
 
             // Act
+            book = dbContext.Books.Where(a => a.Title == "Qui Le Bannanas").FirstOrDefault();
 
             // Assert
+            Assert.Equal("Qui Le Bannanas", book.Title);
         }
 
         [Fact]
-        public void SearchForAuthorBooksInDatabase_Test()
+        public void SearchForAuthorBooksInDatabase_Test_ExpectedToReturnTrue()
         {
             // Arrange
+            Book book;
 
             // Act
+            book = dbContext.Books.Where(a => a.Author == "Johan").FirstOrDefault();
 
             // Assert
+            Assert.Equal("Johan", book.Author);
         }
         [Fact]
         public void SearchForLoanedOutBooksInDatabase_Test()
         {
 
             // Arrange
-            A.CallTo(() => _bookRepository.BookLoanedOut("Bannanas")).Returns(true);
+            Book book;
 
             // Act
-            var result = _bookRepository.BookLoanedOut("Bannanas");
+            book = dbContext.Books.Where(b => b.LoanedOut == true).FirstOrDefault();
 
             // Assert
-            Assert.True(result);
-            //result.Should().Equals(true);
+            Assert.True(book.LoanedOut);
+            
+           
         }
 
         public void Dispose()

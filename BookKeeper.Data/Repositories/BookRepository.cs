@@ -36,9 +36,9 @@ namespace BookKeeper.Data.Repositories
             return _context.Books.SingleOrDefault(x => x.Title == title);
         }
 
-        public List<Book> GetBooksAsync()
+        public IEnumerable<List<Book>> GetBooks()
         {
-            return _context.Books.ToList();
+            yield return _context.Books.ToList();
         }
 
         public List<Book> GetBooksByAuthor(string author)
