@@ -14,17 +14,23 @@ namespace BookKeeper.Controllers
     public class BookLoansController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IBookLoanRepository bookLoanRepository;
+        private IBookLoanRepository bookLoanRepositoryMock;
 
         public BookLoansController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        public BookLoansController(IBookLoanRepository bookLoanRepositoryMock)
+        {
+            this.bookLoanRepositoryMock = bookLoanRepositoryMock;
+        }
+
         // GET: BookLoans
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BookLoans.ToListAsync());
+            var applicationDbContext = _context.BookLoans.Include(b => b.Book).Include(b => b.User);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: BookLoans/Details/5
@@ -36,6 +42,8 @@ namespace BookKeeper.Controllers
             }
 
             var bookLoan = await _context.BookLoans
+                .Include(b => b.Book)
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookLoan == null)
             {
@@ -48,6 +56,8 @@ namespace BookKeeper.Controllers
         // GET: BookLoans/Create
         public IActionResult Create()
         {
+            ViewData["BookId"] = new SelectList(_context.Books, "BookId", "Author");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -56,7 +66,7 @@ namespace BookKeeper.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,ClosedTime")] BookLoan bookLoan)
+        public async Task<IActionResult> Create([Bind("Id,StartDate,BookId,UserId")] BookLoan bookLoan)
         {
             if (ModelState.IsValid)
             {
@@ -64,6 +74,8 @@ namespace BookKeeper.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BookId"] = new SelectList(_context.Books, "BookId", "Author", bookLoan.BookId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", bookLoan.UserId);
             return View(bookLoan);
         }
 
@@ -80,6 +92,8 @@ namespace BookKeeper.Controllers
             {
                 return NotFound();
             }
+            ViewData["BookId"] = new SelectList(_context.Books, "BookId", "Author", bookLoan.BookId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", bookLoan.UserId);
             return View(bookLoan);
         }
 
@@ -88,7 +102,7 @@ namespace BookKeeper.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,ClosedTime")] BookLoan bookLoan)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartDate,BookId,UserId")] BookLoan bookLoan)
         {
             if (id != bookLoan.Id)
             {
@@ -115,6 +129,8 @@ namespace BookKeeper.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BookId"] = new SelectList(_context.Books, "BookId", "Author", bookLoan.BookId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", bookLoan.UserId);
             return View(bookLoan);
         }
 
@@ -127,6 +143,8 @@ namespace BookKeeper.Controllers
             }
 
             var bookLoan = await _context.BookLoans
+                .Include(b => b.Book)
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookLoan == null)
             {

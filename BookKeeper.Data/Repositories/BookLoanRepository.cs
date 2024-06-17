@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BookKeeper.Data.Repositories
 {
@@ -24,19 +25,19 @@ namespace BookKeeper.Data.Repositories
             _context.SaveChanges();
             return bookLoan;
         }
-        public BookLoan AddBookLoan(int userId, int bookId)
+        public BookLoan AddBookLoan(DateTime s, int userId, int bookId)
         {
 
             var user = _context.Users.Find(userId);
             var book = _context.Books.Find(bookId);
-            var newBookLoan = new BookLoan(user: user, book: book);
+            var newBookLoan = new BookLoan(DateTime.UtcNow , user, book);
 
             return AddBookLoan(newBookLoan);
         }
 
-        public List<BookLoan> BookLoan()
+        public List<BookLoan> GetBookLoans()
         {
-            throw new NotImplementedException();
+            return _context.BookLoans.ToList();
         }
 
 

@@ -30,6 +30,14 @@ namespace BookKeeper.Data.Repositories
             
         }
 
+        public Book CreateBook(string author, string title, string language)
+        {
+           var book = new Book(author, title, language);
+            _context.Books.Add(book);
+            _context.SaveChanges();
+            return book;
+        }
+
         public Book GetBookById(int id)
         {
             return _context.Books.SingleOrDefault(x => x.BookId == id);

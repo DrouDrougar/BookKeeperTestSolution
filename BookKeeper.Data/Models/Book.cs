@@ -14,12 +14,11 @@ namespace BookKeeper.Data.Models
 
         }
 
-        public Book(string author, string country, string language, int numberOfPages, string title, int year, string? informationUrl = null, string? imageName = null)
+        public Book(string author, string language, string title)
         {
             Author = author;
             Language = language;
             Title = title;
-
         }
 
         public int BookId { get; set; }
@@ -30,7 +29,7 @@ namespace BookKeeper.Data.Models
 
         public string Title { get; set; } = "";
 
-        public bool LoanedOut { get; set; } = false;
+        public bool? LoanedOut { get; set; } = false;
 
 
     }

@@ -16,9 +16,16 @@ namespace BookKeeper.Data.Repositories
         {
             this._context = context;
         }
+        public User CreateUser(string email, string firstName, string lastName)
+        {
+            var user = new User(email, firstName, lastName);
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return user;
+        }
         public User GetById(int id)
         {
-            return _context.Users.SingleOrDefault(x => x.Id == id);
+            return _context.Users.Where(x => x.Id == id).FirstOrDefault();
         }
 
         public List<User> GetUsers()

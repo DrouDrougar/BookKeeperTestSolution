@@ -7,19 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookKeeper.Data.Data;
 using BookKeeper.Data.Models;
-using BookKeeper.Data.Repositories;
 
 namespace BookKeeper.Controllers
 {
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IBookRepository _bookRepository;
 
-        public BooksController(ApplicationDbContext context, IBookRepository bookRepository)
+        public BooksController(ApplicationDbContext context)
         {
             _context = context;
-            _bookRepository = bookRepository;
         }
 
         // GET: Books

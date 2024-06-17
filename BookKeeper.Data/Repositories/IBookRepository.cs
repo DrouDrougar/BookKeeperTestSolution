@@ -9,6 +9,7 @@ namespace BookKeeper.Data.Repositories
 {
     public interface IBookRepository
     {
+        public Book CreateBook(string author, string title, string language);
         public IEnumerable<List<Book>> GetBooks();
         public Book GetBookById(int id);
         public Book GetBookByTitle(string title);

@@ -9,12 +9,19 @@ namespace BookKeeper.Data.Models
 {
     public class User
     {
+        public User() { }
 
+        public User(string email, string firstName, string lastName) 
+        {
+            Email = email;
+            FirstName = firstName;
+            LastName = lastName;
+        }
         public int Id { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public bool HasBookLoan { get; set; }
+        public bool? HasBookLoan { get; set; }
 
     }
 }

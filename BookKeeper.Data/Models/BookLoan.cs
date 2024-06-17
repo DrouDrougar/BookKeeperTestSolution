@@ -14,20 +14,18 @@ namespace BookKeeper.Data.Models
 
         }
 
-        public BookLoan(User user, Book book)
+        public BookLoan(DateTime datetime, User user, Book book)
         {
-
+            StartDate = datetime;
             User = user;
             Book = book;
         }
 
         public int Id { get; set; }
-
+        public DateTime StartDate { get; set; }
         public Book Book { get; set; }
-        [ForeignKey(nameof(Book))]
         public int BookId { get; set; }
         public User User { get; set; }
-        [ForeignKey(nameof(User))]
         public int UserId { get; set; }
     }
 }
