@@ -7,6 +7,10 @@ namespace BookKeeper.Data.Repositories
     {
 
         private readonly ApplicationDbContext _context;
+        public BookRepository(ApplicationDbContext context)
+        {
+            this._context = context;
+        }
 
         public bool BookLoanedOut(string title)
         {

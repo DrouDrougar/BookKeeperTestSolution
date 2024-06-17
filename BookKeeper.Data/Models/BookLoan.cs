@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,20 +14,20 @@ namespace BookKeeper.Data.Models
 
         }
 
-        public BookLoan(DateTime startTime, DateTime endTime, User user, Book book)
+        public BookLoan(User user, Book book)
         {
-            StartTime = startTime;
-            EndTime = endTime;
+
             User = user;
             Book = book;
         }
 
         public int Id { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public DateTime? ClosedTime { get; set; }
 
         public Book Book { get; set; }
+        [ForeignKey(nameof(Book))]
+        public int BookId { get; set; }
         public User User { get; set; }
+        [ForeignKey(nameof(User))]
+        public int UserId { get; set; }
     }
 }

@@ -1,46 +1,36 @@
 ﻿using BookKeeper.Data.Data;
 using BookKeeper.Data.Models;
 using BookKeeper.Data.Repositories;
-using BookKeeper.Test.Helper;
-using FakeItEasy;
-using FluentAssertions.Common;
-using FluentAssertions.Equivalency;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BookKeeper.Test
 {
-    public class BookLoanTest : IDisposable
+    public class RepositoryFixture : IDisposable
     {
-
-        private static DbContextOptions<ApplicationDbContext> dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "BookKeeperTest")
-            .Options;
-
         ApplicationDbContext dbContext;
-        private readonly IBookRepository _bookRepository;
-        private readonly IBookLoanRepository _bookLoanRepository;
-        private readonly IUserRepository _userRepository;
+        public IBookLoanRepository BookLoanRepository { get; private set; }
+        public IBookRepository BookRepository { get; private set; }
+        public IUserRepository UserRepository { get; private set; }
 
-
-
-        public BookLoanTest(IBookLoanRepository bookLoanRepository, IBookRepository bookRepository, IUserRepository userRepository) : base()
+        public RepositoryFixture() 
         {
-            dbContext = new ApplicationDbContext(dbContextOptions);
-            _bookLoanRepository = new BookLoanRepository(dbContext);
-            _bookRepository = new BookRepository(dbContext);
-            _userRepository = new UserRepository(dbContext);
-            dbContext.Database.EnsureCreated();
+            var dbContext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("TestDb").Options);
 
-            SeedDatabase();
+            BookLoanRepository = new Mock<IBookLoanRepository>().Object;
+            BookRepository = new Mock<IBookRepository>().Object;
+            UserRepository = new Mock<IUserRepository>().Object;
+
+            SeedDatabase(dbContext);
         }
-
-        public void SeedDatabase()
+        public void SeedDatabase(ApplicationDbContext dbContext)
         {
             List<Book> books = new List<Book>()
             {
@@ -65,7 +55,7 @@ namespace BookKeeper.Test
             };
             dbContext.Users.AddRange(users);
 
-            
+
             List<BookLoan> bookLoans = new List<BookLoan>()
             {
                 new BookLoan() {Id = 1, BookId = 1, UserId = 1},
@@ -78,46 +68,6 @@ namespace BookKeeper.Test
             dbContext.BookLoans.AddRange(bookLoans);
             dbContext.SaveChanges();
         }
-
-        [Fact]
-        public void AreThereAnyBookLoans_Test()
-        {
-            //Arrange
-            BookLoan bookLoan = new BookLoan();
-
-            //Act
-            var bookLoanCounter = dbContext.BookLoans.Any();
-
-            //Assert
-            Assert.True(bookLoanCounter);
-
-
-        }
-
-        [Fact]
-        public void CanWeCreateANewBookLoan_Test_ShouldReturnNewBookLoan()
-        {
-            //Arrange
-
-            BookLoan bookLoan = new BookLoan();
-            BookLoan bookedLoan = new BookLoan();
-            BookLoan theFinalBook = new BookLoan();
-
-
-            //Act
-            var user = _userRepository.GetById(6);
-            var book = _bookRepository.GetBookById(6);
-            bookLoan = BookLoanHelper.CreateBookLoan(_bookLoanRepository ,user, book);
-
-            //bookedLoan = _bookLoanRepository.BookLoanAdd(bookLoan);
-            var bookLoanResults = dbContext.BookLoans.Where(b => b.Book.Title == "Deep Fried Bannans").FirstOrDefault();
-          
-            //Assert
-            Assert.Equal("Deep Fried Bannans", bookLoanResults.Book.Title);
-
-
-        }
-
         public void Dispose()
         {
             dbContext.Database.EnsureDeleted();

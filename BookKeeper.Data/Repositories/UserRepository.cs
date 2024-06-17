@@ -12,6 +12,10 @@ namespace BookKeeper.Data.Repositories
     {
 
         private readonly ApplicationDbContext _context;
+        public UserRepository(ApplicationDbContext context)
+        {
+            this._context = context;
+        }
         public User GetById(int id)
         {
             return _context.Users.SingleOrDefault(x => x.Id == id);

@@ -9,9 +9,13 @@ namespace BookKeeper.Data.Repositories
 {
     public interface IBookLoanRepository
     {
+        public BookLoan AddBookLoan(BookLoan bookLoan);
+        public BookLoan AddBookLoan(int userId, int bookId);
         public List<BookLoan> BookLoan();
         public BookLoan GetLoanById(int id);
         public BookLoan GetLoanByTitle(string title);
         public BookLoan GetBooksByUser(string user);
+
+        public bool IsBookBorrowed(int userId, int bookId);
     }
 }

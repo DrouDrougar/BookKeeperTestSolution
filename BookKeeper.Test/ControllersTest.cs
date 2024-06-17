@@ -1,6 +1,11 @@
-﻿using BookKeeper.Data.Models;
+﻿using BookKeeper.Controllers;
+using BookKeeper.Data.Data;
+using BookKeeper.Data.Models;
 using BookKeeper.Data.Repositories;
 using FakeItEasy;
+using Microsoft.AspNetCore.Mvc;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
@@ -15,33 +20,14 @@ namespace BookKeeper.Test
         private readonly IBookRepository bookRepository;
         private readonly IBookLoanRepository bookLoanRepository;
         private readonly IUserRepository userRepository;
+        private readonly ApplicationDbContext _context;
 
         public ControllersTest()
         {
             bookRepository = A.Fake<IBookRepository>();
             bookLoanRepository = A.Fake<IBookLoanRepository>();
             userRepository = A.Fake<IUserRepository>();
-        }
-
-        [Fact]
-        public void TestIfBookControllerCanCreateNewBooks_Create_ExpectedToReturnTrue()
-        {
-            //Arrange
-
-            //Act
-
-            //Assert
-        }
-        [Fact]
-        public void BookController_Index_ExpectedToReturnTrue()
-        {
-            //Arrange
-            var books = A.Fake<IEnumerable<Book>>();
-            //A.CallTo(() => bookRepository.GetBooks()).Returns(books);
-            //Act
-
-
-            //Assert
+            _context = A.Fake<ApplicationDbContext>();
         }
     }
 }
