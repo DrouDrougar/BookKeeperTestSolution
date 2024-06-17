@@ -24,22 +24,16 @@ namespace BookKeeper.Test.Helper
 {
     public class TestBase
     {
-        protected ApplicationDbContext _dbContext;
-
-        protected User _DefaultSeedUserData = new User("Email@hotmail.com", "Johan", "Efternamn");
+        public ApplicationDbContext _context;
 
         private DbContextOptions<ApplicationDbContext> _options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase("BookKeeperTestBase")
+            .UseInMemoryDatabase(databaseName: "BookKeeperTest")
             .Options;
-
-        protected readonly Mock<UserRepository> _userRepositoryMock;
-        protected readonly Mock<BookRepository> _bookRepositoryMock;
-        protected readonly Mock<BookLoanRepository> _bookLoanRepositoryMock;
 
         protected TestBase()
         {
-            _dbContext = new ApplicationDbContext(_options);
-            _dbContext.Database.EnsureCreated();
+            _context = new ApplicationDbContext(_options);
+            _context.Database.EnsureCreated();
 
             SeedDatabase();
         }
@@ -54,7 +48,7 @@ namespace BookKeeper.Test.Helper
             new Book() {BookId = 5, Author = "Jurgen", Language = "German", Title = "Daz U Bannanas", LoanedOut = false},
             new Book() {BookId = 6, Author = "Hendrik", Language = "America", Title = "Deep Fried Bannans", LoanedOut = false}
         };
-            _dbContext.Books.AddRange(books);
+            _context.Books.AddRange(books);
 
             List<User> users = new List<User>()
         {
@@ -66,8 +60,7 @@ namespace BookKeeper.Test.Helper
             new User() {Id = 6, Email = "Lånare1@hotmail.com", FirstName = "Lånare1", LastName = "Lånares1son", HasBookLoan = false},
             new User() {Id = 7, Email = "Lånare2@hotmail.com", FirstName = "Lånare2", LastName = "Lånares2son", HasBookLoan = false}
         };
-            _dbContext.Users.AddRange(users);
-
+            _context.Users.AddRange(users);
 
             List<BookLoan> bookLoans = new List<BookLoan>()
         {
@@ -76,16 +69,27 @@ namespace BookKeeper.Test.Helper
             new BookLoan() {Id = 3,  StartDate = DateTime.UtcNow,BookId = 3, UserId = 3},
             new BookLoan() {Id = 4,  StartDate = DateTime.UtcNow,BookId = 4, UserId = 4},
             new BookLoan() {Id = 5,  StartDate = DateTime.UtcNow,BookId = 5, UserId = 5}
-            //new BookLoan() {Id = 6, StartTime = DateTime.UtcNow, EndTime= DateTime.UtcNow.AddDays(7), BookId = 6, UserId = 6}
+          
         };
-            _dbContext.BookLoans.AddRange(bookLoans);
+            _context.BookLoans.AddRange(bookLoans);
 
-            _dbContext.SaveChanges();
+            _context.SaveChanges();
+        }
+
+        public void CreateNewBookLoan(DateTime dateTime, User user, Book book)
+        {
+            BookLoan bookLoan = new BookLoan(dateTime, user, book);
+            _context.BookLoans.Add(bookLoan);
+            _context.SaveChanges();
+        }
+        public void RemoveBookLoan(BookLoan bookLoanId)
+        {
+
         }
 
         public void Dispose()
         {
-            _dbContext.Database.EnsureDeleted();
+            _context.Database.EnsureDeleted();
         }
     }
 

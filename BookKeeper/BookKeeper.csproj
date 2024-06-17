@@ -20,8 +20,4 @@
     <ProjectReference Include="..\BookKeeper.Data\BookKeeper.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helper\" />
-  </ItemGroup>
-
 </Project>
