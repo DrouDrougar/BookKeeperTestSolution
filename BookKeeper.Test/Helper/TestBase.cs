@@ -48,7 +48,11 @@ namespace BookKeeper.Test.Helper
             new Book() {BookId = 5, Author = "Jurgen", Language = "German", Title = "Daz U Bannanas", LoanedOut = false},
             new Book() {BookId = 6, Author = "Hendrik", Language = "America", Title = "Deep Fried Bannans", LoanedOut = false}
         };
-            _context.Books.AddRange(books);
+            if (books.Any())
+            {
+                _context.Books.AddRange(books);
+            }
+            else {  }
 
             List<User> users = new List<User>()
         {
@@ -60,7 +64,12 @@ namespace BookKeeper.Test.Helper
             new User() {Id = 6, Email = "Lånare1@hotmail.com", FirstName = "Lånare1", LastName = "Lånares1son", HasBookLoan = false},
             new User() {Id = 7, Email = "Lånare2@hotmail.com", FirstName = "Lånare2", LastName = "Lånares2son", HasBookLoan = false}
         };
-            _context.Users.AddRange(users);
+            if (users.Any())
+            {
+                _context.Users.AddRange(users);
+            }
+            else {  }
+           
 
             List<BookLoan> bookLoans = new List<BookLoan>()
         {
@@ -71,20 +80,36 @@ namespace BookKeeper.Test.Helper
             new BookLoan() {Id = 5,  StartDate = DateTime.UtcNow,BookId = 5, UserId = 5}
           
         };
-            _context.BookLoans.AddRange(bookLoans);
+            if (bookLoans.Any())
+            {
+                _context.BookLoans.AddRange(bookLoans);
+            }
+            else { }
+            
 
             _context.SaveChanges();
         }
 
         public void CreateNewBookLoan(DateTime dateTime, User user, Book book)
         {
+            Book bookStatusChange;
+
             BookLoan bookLoan = new BookLoan(dateTime, user, book);
+            bookStatusChange =  _context.Books.Find(book.BookId);
+            bookStatusChange.LoanedOut = true;
+            _context.Books.Update(bookStatusChange);
             _context.BookLoans.Add(bookLoan);
             _context.SaveChanges();
         }
         public void RemoveBookLoan(BookLoan bookLoanId)
         {
-
+            if (bookLoanId.Id != null)
+            {
+                BookLoan bookLoan = _context.BookLoans.Where(l => l.Id == bookLoanId.Id).FirstOrDefault();
+                _context.Remove(bookLoan);
+                _context.SaveChanges();
+            }
+            else { Console.WriteLine("error No bookLoan with that Id exists"); }
         }
 
         public void Dispose()
@@ -94,3 +119,10 @@ namespace BookKeeper.Test.Helper
     }
 
 }
+
+
+// Arrange
+
+// Act
+
+// Assert

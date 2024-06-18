@@ -42,12 +42,24 @@ namespace BookKeeper.Test
 
             //Assert
             Assert.Equal("Deep Fried Bannans", result.Book.Title);
+            Assert.True(book.LoanedOut = true);
+            
         }
 
         [Fact]
         public void RemoveCurrentBookLoan_Test_ShouldReturnFalse()
         {
+            // Arrange
+            BookLoan bookLoan;
+            BookLoan result;
 
+            // Act
+            bookLoan = _context.BookLoans.Find(5);
+            RemoveBookLoan(bookLoan);
+            result = _context.BookLoans.Find(5);
+
+            // Assert
+            Assert.False(result != null);
         }
         public void Dispose()
         {

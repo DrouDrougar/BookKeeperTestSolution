@@ -9,7 +9,6 @@ namespace BookKeeper.Test
 {
     public class UserTests
     {
-        IUserRepository _userRepository;
 
         [Fact]
         public void FindAllUsers_Test()
