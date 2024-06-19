@@ -25,12 +25,12 @@ namespace BookKeeper.Data.Repositories
             _context.SaveChanges();
             return bookLoan;
         }
-        public BookLoan AddBookLoan(DateTime s, int userId, int bookId)
+        public BookLoan AddBookLoan(DateTime startDate, DateTime endDate, int userId, int bookId)
         {
 
             var user = _context.Users.Find(userId);
             var book = _context.Books.Find(bookId);
-            var newBookLoan = new BookLoan(DateTime.UtcNow , user, book);
+            var newBookLoan = new BookLoan(DateTime.UtcNow , DateTime.UtcNow.AddDays(7) , user, book);
 
             return AddBookLoan(newBookLoan);
         }

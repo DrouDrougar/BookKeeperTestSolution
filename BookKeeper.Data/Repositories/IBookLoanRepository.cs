@@ -10,7 +10,7 @@ namespace BookKeeper.Data.Repositories
     public interface IBookLoanRepository
     {
         public BookLoan AddBookLoan(BookLoan bookLoan);
-        public BookLoan AddBookLoan(DateTime startDate, int userId, int bookId);
+        public BookLoan AddBookLoan(DateTime startDate, DateTime endDate, int userId, int bookId);
         public List<BookLoan> GetBookLoans();
         public BookLoan GetLoanById(int id);
         public BookLoan GetLoanByTitle(string title);

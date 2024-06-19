@@ -3,6 +3,8 @@ using BookKeeper.Data.Data;
 using BookKeeper.Data.Models;
 using BookKeeper.Data.Repositories;
 using BookKeeper.Test.Helper;
+using FluentAssertions;
+using NuGet.ContentModel;
 
 namespace BookKeeper.Test
 {
@@ -30,20 +32,21 @@ namespace BookKeeper.Test
             User user;
             Book book;
             DateTime dateTime = DateTime.Now;
+            DateTime endTime = DateTime.Now.AddDays(7);
 
             //Act
             
             user = _context.Users.Find(6);
             //bookid of 6 got title of "Deep Fried Bannans"
             book = _context.Books.Find(6);
-            CreateNewBookLoan(dateTime, user, book);
+            CreateNewBookLoan(dateTime, endTime, user, book);
 
             result = _context.BookLoans.Where(b => b.Book.BookId == book.BookId).FirstOrDefault();
 
             //Assert
             Assert.Equal("Deep Fried Bannans", result.Book.Title);
             Assert.True(book.LoanedOut = true);
-            
+             
         }
 
         [Fact]
@@ -60,6 +63,53 @@ namespace BookKeeper.Test
 
             // Assert
             Assert.False(result != null);
+        }
+
+        [Fact]
+        public void CheckForExpiredBookLoans_Test_ShouldReturnAPossitiveLateLoan()
+        {
+            //Arrange
+            List<BookLoan> bookLoans = _context.BookLoans.ToList();
+            bool result = false;
+            DateTime dateTime = DateTime.Now;
+
+            //Act
+            bookLoans = (List<BookLoan>)_context.BookLoans.Where(b => b.EndDate <= dateTime).ToList();
+            if (bookLoans != null)
+            { result = true; }
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void ProlongACurrentBookLoan_Test_ShouldReturnAPossitiveAndANegativeIfTheLoanHadAlreadyExpired()
+        {
+            //Arrange
+            BookLoan bookLoan;
+            BookLoan lateBookLoan;
+            DateTime currentDateTime = DateTime.Now;
+            bool isBookAlreadyLate = false;
+
+            //Act
+            bookLoan = _context.BookLoans.Find(1);
+
+            lateBookLoan = _context.BookLoans.Find(4);
+
+            if (bookLoan.EndDate <= currentDateTime)
+            {
+                isBookAlreadyLate = false;
+                bookLoan.EndDate = currentDateTime.AddDays(7);
+            }
+            if (lateBookLoan.EndDate <= currentDateTime)
+            {
+                isBookAlreadyLate = true;
+                bookLoan.EndDate = currentDateTime.AddDays(7);
+            }
+
+            //Assert
+            Assert.Equal(currentDateTime.AddDays(7), bookLoan.EndDate);
+            Assert.True(isBookAlreadyLate);
         }
         public void Dispose()
         {

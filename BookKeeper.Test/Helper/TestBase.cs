@@ -70,14 +70,15 @@ namespace BookKeeper.Test.Helper
             }
             else {  }
            
-
+            //string earlierDate = "05-31-2024 23:59:59";
+            //string laterDate = "06-19-2024 16:45:59";
             List<BookLoan> bookLoans = new List<BookLoan>()
         {
-            new BookLoan() {Id = 1, StartDate = DateTime.UtcNow, BookId = 1, UserId = 1},
-            new BookLoan() {Id = 2, StartDate = DateTime.UtcNow, BookId = 2, UserId = 2},
-            new BookLoan() {Id = 3,  StartDate = DateTime.UtcNow,BookId = 3, UserId = 3},
-            new BookLoan() {Id = 4,  StartDate = DateTime.UtcNow,BookId = 4, UserId = 4},
-            new BookLoan() {Id = 5,  StartDate = DateTime.UtcNow,BookId = 5, UserId = 5}
+            new BookLoan() {Id = 1, StartDate = DateTime.UtcNow.AddDays(-4),EndDate = DateTime.UtcNow.AddDays(3), BookId = 1, UserId = 1},
+            new BookLoan() {Id = 2, StartDate = DateTime.UtcNow,EndDate = DateTime.UtcNow.AddDays(7), BookId = 2, UserId = 2},
+            new BookLoan() {Id = 3,  StartDate = DateTime.UtcNow,EndDate = DateTime.UtcNow.AddDays(7),BookId = 3, UserId = 3},
+            new BookLoan() {Id = 4,  StartDate = DateTime.UtcNow.AddDays(-15),EndDate = DateTime.UtcNow.AddDays(-8),BookId = 4, UserId = 4},
+            new BookLoan() {Id = 5,  StartDate = DateTime.UtcNow,EndDate = DateTime.UtcNow.AddDays(7), BookId = 5, UserId = 5}
           
         };
             if (bookLoans.Any())
@@ -90,11 +91,11 @@ namespace BookKeeper.Test.Helper
             _context.SaveChanges();
         }
 
-        public void CreateNewBookLoan(DateTime dateTime, User user, Book book)
+        public void CreateNewBookLoan(DateTime dateTime, DateTime endDate, User user, Book book)
         {
             Book bookStatusChange;
 
-            BookLoan bookLoan = new BookLoan(dateTime, user, book);
+            BookLoan bookLoan = new BookLoan(dateTime, endDate, user, book);
             bookStatusChange =  _context.Books.Find(book.BookId);
             bookStatusChange.LoanedOut = true;
             _context.Books.Update(bookStatusChange);
@@ -110,6 +111,13 @@ namespace BookKeeper.Test.Helper
                 _context.SaveChanges();
             }
             else { Console.WriteLine("error No bookLoan with that Id exists"); }
+        }
+
+        public void FindBooksThatAreLate()
+        {
+            List<BookLoan> allBookLoans = _context.BookLoans.ToList();
+            List<BookLoan> lateBookLoans = new List<BookLoan>(allBookLoans);
+            lateBookLoans = (List<BookLoan>)_context.BookLoans.Where(bl => bl.EndDate <= DateTime.UtcNow);
         }
 
         public void Dispose()
